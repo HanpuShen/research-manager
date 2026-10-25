@@ -1,0 +1,1 @@
+{"mcpServers":{"research-manager":{"command":"/absolute/path/to/research-manager/bin/research","args":["--memory","/absolute/path/to/research-memory","mcp"]},"research-manager-read-only":{"command":"/absolute/path/to/research-manager/bin/research","args":["--memory","/absolute/path/to/research-memory","mcp","--read-only"]}}}

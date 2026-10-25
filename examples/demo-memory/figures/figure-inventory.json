@@ -1,0 +1,26 @@
+[
+  {
+    "name": "main-curves",
+    "title": "Learning curves: chunked vs single-step critic",
+    "kind": "result",
+    "caption": "Mean success over 5 seeds on three of the five tasks; bands are \u00b11 SD across seeds.",
+    "readingGuide": "x: gradient steps; y: success in %. Blue is the chunked critic, grey the single-step critic. Compare the right end of each panel: the gap is large on long-reach, small on slide-door.",
+    "artifacts": [
+      {
+        "path": "main-curves.png"
+      }
+    ]
+  },
+  {
+    "name": "ablation-bars",
+    "title": "Ablation: removing the distilled critic",
+    "kind": "result",
+    "caption": "Final success (%), mean of 5 seeds.",
+    "readingGuide": "Compare each blue bar with the grey bar to its right. Only long-reach loses more than 10 points without the distilled critic.",
+    "artifacts": [
+      {
+        "path": "ablation-bars.png"
+      }
+    ]
+  }
+]

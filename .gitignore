@@ -1,0 +1,7 @@
+node_modules
+dist/
+.tools
+*.vsix
+test-results/
+.cache/
+__pycache__/

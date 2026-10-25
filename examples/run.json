@@ -1,0 +1,12 @@
+{
+  "requestId": "replace-with-a-stable-request-id",
+  "projectId": "project-demo",
+  "experimentId": "replace-with-an-existing-experiment-id",
+  "sourceRoot": "/absolute/path/to/source",
+  "command": ["/absolute/path/to/python", "{{source}}/experiment.py", "--output", "{{output}}"],
+  "resources": {"partition":"gpu","cpus":1,"memory":"2G","time":"00:05:00","gpus":0},
+  "retryLimit": 0,
+  "expectedArtifacts": ["results.json"],
+  "config": {},
+  "inputs": []
+}

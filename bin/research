@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+research_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+research_node="${RESEARCH_NODE:-$research_root/.tools/bin/node}"
+if [ ! -x "$research_node" ]; then
+  research_node="$(command -v node || true)"
+fi
+if [ -z "$research_node" ] || ! "$research_node" -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 24 ? 0 : 1)' 2>/dev/null; then
+  echo 'Research Manager needs Node 24 or newer. Set RESEARCH_NODE or run scripts/bootstrap.sh.' >&2
+  exit 1
+fi
+exec "$research_node" "$research_root/dist/cli.cjs" "$@"

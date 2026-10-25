@@ -1,0 +1,127 @@
+{
+  "name": "research-manager",
+  "displayName": "Research Manager",
+  "description": "Shared research memory, evidence maps, and reproducible experiments.",
+  "version": "0.1.9",
+  "publisher": "hanpu",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.109.0",
+    "node": ">=24.0.0"
+  },
+  "extensionKind": [
+    "workspace"
+  ],
+  "main": "./dist/extension.cjs",
+  "bin": {
+    "research": "bin/research"
+  },
+  "activationEvents": [
+    "onView:research.projects",
+    "onCommand:research.open",
+    "onUri"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "research.open",
+        "title": "Research Manager: Open"
+      },
+      {
+        "command": "research.refresh",
+        "title": "Research Manager: Refresh"
+      },
+      {
+        "command": "research.configure",
+        "title": "Research Manager: Set Memory Folder"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "research",
+          "title": "Research",
+          "icon": "media/research.svg"
+        }
+      ]
+    },
+    "views": {
+      "research": [
+        {
+          "id": "research.projects",
+          "name": "Research"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Research Manager",
+      "properties": {
+        "research.memoryRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Folder containing shared Markdown research records."
+        },
+        "research.cacheRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Local disk cache directory. Keep this outside NFS."
+        },
+        "research.googleClientId": {
+          "type": "string",
+          "default": "",
+          "description": "Google Desktop OAuth client ID for Drive metadata access."
+        },
+        "research.pollSeconds": {
+          "type": "number",
+          "default": 30,
+          "minimum": 10,
+          "description": "Experiment refresh interval while this window is open."
+        },
+        "research.reportSyncMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Overleaf refresh interval while this window is open."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "package": "npm run build && vsce package --no-dependencies --allow-missing-repository --no-rewrite-relative-links --out research-manager-$npm_package_version.vsix",
+    "preview": "node scripts/preview.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.5",
+    "@xyflow/react": "^12.8.5",
+    "elkjs": "^0.10.0",
+    "katex": "0.16.47",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "6.0.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "yaml": "^2.8.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@types/vscode": "^1.109.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.9",
+    "playwright": "1.51.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

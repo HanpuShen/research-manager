@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Manager</title>
+<meta property="og:title" content="Research Manager">
+<meta property="og:image" content="https://hanpushen.github.io/research-manager/screenshots/overview.png">
+<meta property="og:url" content="https://hanpushen.github.io/research-manager/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a7de1' stroke-width='2'%3E%3Cpath d='M12 2 22 12 12 22 2 12Z'/%3E%3Cpath d='M12 7 17 12 12 17 7 12Z'/%3E%3C/svg%3E">
+<meta property="og:description" content="A shared research memory for you and your AI agents: claims, experiments and evidence as Markdown, with an MCP server for agents.">
+<meta name="description" content="A shared research memory for you and your AI agents: claims, experiments, evidence and related work as Markdown, an argument map in VS Code, and an MCP server for agents.">
+<style>
+  :root {
+    --bg: #ffffff; --panel: #f5f6f8; --line: #e1e4e8; --fg: #1d2127; --muted: #5d6673; --accent: #2a7de1; --accent-fg: #ffffff; --code: #eef1f5;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #15171a; --panel: #1d2024; --line: #2c3036; --fg: #e6e8eb; --muted: #9aa3ad; --accent: #5aa2f0; --accent-fg: #0b1220; --code: #23272d;
+  } }
+  :root[data-theme="dark"] { --bg: #15171a; --panel: #1d2024; --line: #2c3036; --fg: #e6e8eb; --muted: #9aa3ad; --accent: #5aa2f0; --accent-fg: #0b1220; --code: #23272d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 17px; color: var(--fg); text-decoration: none; }
+  .brand svg { width: 22px; height: 22px; }
+  nav.links { display: flex; gap: 18px; font-size: 14px; flex-wrap: wrap; }
+  nav.links a { color: var(--muted); text-decoration: none; }
+  nav.links a:hover { color: var(--fg); }
+  .hero { padding: 48px 0 24px; text-align: center; }
+  .hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.15; margin: 0 0 14px; letter-spacing: -0.02em; }
+  .hero p.lede { font-size: clamp(16px, 2vw, 19px); color: var(--muted); max-width: 760px; margin: 0 auto 26px; }
+  .cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--line); color: var(--fg); background: var(--panel); }
+  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .frame { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #202225; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+  .frame video, .frame img { display: block; width: 100%; height: auto; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  section { padding: 56px 0; }
+  section h2 { font-size: clamp(24px, 3.2vw, 32px); margin: 0 0 8px; letter-spacing: -0.01em; }
+  section p.sub { color: var(--muted); margin: 0 0 28px; max-width: 720px; }
+  .tour { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+  .tour > *, .step > div { min-width: 0; }
+  .tabs { display: flex; flex-direction: column; gap: 8px; }
+  .tab { text-align: left; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; font: inherit; }
+  .tab strong { display: block; font-size: 15px; }
+  .tab span { display: block; font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+  .tab[aria-selected="true"] { border-color: var(--accent); background: var(--panel); box-shadow: inset 3px 0 0 var(--accent); }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--panel); }
+  .card h3 { margin: 0 0 8px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps { counter-reset: step; display: grid; gap: 16px; }
+  .step { display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: start; }
+  .step::before { counter-increment: step; content: counter(step); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-fg); font-weight: 700; }
+  .step h3 { margin: 3px 0 6px; font-size: 17px; }
+  .step p { margin: 0 0 8px; color: var(--muted); }
+  pre { margin: 0; padding: 12px 14px; background: var(--code); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+  .also { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 14px; color: var(--muted); background: var(--panel); }
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .theme { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: 13px; }
+  @media (max-width: 820px) {
+    .tour { grid-template-columns: 1fr; }
+    .tabs { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
+    .tab { min-width: 200px; }
+    .grid3 { grid-template-columns: 1fr; }
+    nav.links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12Z"/><path d="M12 7 17 12 12 17 7 12Z"/></svg>Research Manager</a>
+    <nav class="links" aria-label="Sections"><a href="#tour">Tour</a><a href="#how">How it works</a><a href="#start">Get started</a><a href="https://github.com/HanpuShen/research-manager">GitHub</a></nav>
+  </header>
+
+  <div class="hero">
+    <h1>A shared research memory<br>for you and your AI agents</h1>
+    <p class="lede">Claims, experiments, evidence and related work live as plain Markdown. You see an argument map in VS Code; your agents read and write the same records through MCP — and you keep the final say on every verdict.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/HanpuShen/research-manager/releases">Download for VS Code</a>
+      <a class="btn" href="https://github.com/HanpuShen/research-manager">View on GitHub</a>
+    </div>
+    <div class="frame"><video poster="screenshots/overview.png" autoplay muted loop playsinline controls aria-label="Walkthrough: reviewing an agent's verdict proposal, following a claim to its experiment, and reading its figures"><source src="screenshots/walkthrough.webm" type="video/webm"><source src="screenshots/walkthrough.mp4" type="video/mp4"></video></div>
+    <p class="note">Every screen on this page uses the bundled demo project with synthetic data.</p>
+  </div>
+</div>
+
+<section id="tour"><div class="wrap">
+  <h2>Take the tour</h2>
+  <p class="sub">Click a step to see that part of the app.</p>
+  <div class="tour">
+    <div class="tabs" role="tablist" aria-label="Product tour"></div>
+    <figure class="shot" style="margin:0"><a class="frame" id="tour-link" target="_blank" rel="noopener" title="Open full size" style="display:block"><img id="tour-image" alt=""></a><figcaption id="tour-caption"></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="how" style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);"><div class="wrap">
+  <h2>How it works</h2>
+  <p class="sub">One memory folder, three ways in: the VS Code app, the <code>research</code> CLI, and an MCP server for agents.</p>
+  <div class="grid3">
+    <div class="card"><h3>Markdown you own</h3><p>Each record is a Markdown file with YAML front matter. A local index keeps it fast, and every change keeps the previous version in <code>history/</code>.</p></div>
+    <div class="card"><h3>Agents with a small context</h3><p>A project handoff is about 20 KB instead of megabytes. Agents read one claim's evidence at a time, search ranked cards, and check their records with <code>research_lint</code>.</p></div>
+    <div class="card"><h3>Human-only judgments</h3><p>Agents propose verdicts and back-burner moves; only you accept them. Nothing is deleted: refuted work keeps its evidence and can be restored.</p></div>
+  </div>
+  <div style="margin-top:22px" class="also">
+    <span class="pill">Writing guides as MCP prompts</span><span class="pill">Overleaf report: outline, sections, sync</span><span class="pill">BibTeX and arXiv import</span><span class="pill">PDF and code discovery</span><span class="pill">Reproducible Slurm runs</span><span class="pill">Source-code map</span><span class="pill">Google Drive links</span><span class="pill">LaTeX math</span>
+  </div>
+</div></section>
+
+<section id="start"><div class="wrap">
+  <h2>Get started</h2>
+  <p class="sub">About five minutes, with the demo project.</p>
+  <div class="steps">
+    <div class="step"><div><h3>Install the extension</h3><p>Download <code>research-manager-0.1.9.vsix</code> from <a href="https://github.com/HanpuShen/research-manager/releases">Releases</a>, then in VS Code choose <em>Extensions → … → Install from VSIX</em> and run <strong>Research Manager: Open</strong>.</p></div></div>
+    <div class="step"><div><h3>Get the CLI, MCP server and demo</h3><p>Agents use the <code>research</code> command from a clone of the repository. On Linux the bootstrap installs Node 24 locally and builds; on macOS or Windows install Node 24, then run <code>npm ci &amp;&amp; npm run build</code>.</p>
+      <pre>git clone https://github.com/HanpuShen/research-manager.git
+cd research-manager && ./scripts/bootstrap.sh</pre>
+      <p style="margin-top:8px">To see the demo, run <strong>Research Manager: Set Memory Folder</strong> and choose <code>examples/demo-memory</code> in the clone.</p></div></div>
+    <div class="step"><div><h3>Connect your agent</h3><p>Any MCP client works. With Claude Code, from the clone:</p>
+      <pre>claude mcp add research-manager -- "$PWD/bin/research" \
+  --memory /path/to/research-memory mcp</pre>
+      <p style="margin-top:8px">Then ask: <em>“Read the handoff for my project and tell me what needs a decision.”</em> Add <code>--read-only</code> for an agent that should analyse but not write.</p></div></div>
+  </div>
+</div></section>
+
+<div class="wrap">
+  <footer>
+    <span>Research Manager · MIT License · <a href="https://github.com/HanpuShen/research-manager/blob/main/docs/user-guide.md">User guide</a> · <a href="https://github.com/HanpuShen/research-manager/tree/main/docs/guides">Guides for agents</a></span>
+    <button class="theme" id="theme" type="button">Theme: auto</button>
+  </footer>
+</div>
+
+<script>
+  const steps = [
+    { image: 'overview.png', title: 'See what needs a decision', text: 'The question, the current answer and the claim chain, with agent proposals and back-burner candidates waiting for you.', caption: 'Overview: one verdict proposal is waiting for review.' },
+    { image: 'claim-proposal.png', title: 'Agents propose, you decide', text: 'An agent proposes a verdict with the deciding numbers; the review form is pre-filled, and only you can confirm it.', caption: 'A claim with an agent’s Mixed proposal and the evidence it rests on.' },
+    { image: 'experiment-map.png', title: 'Every experiment tests one claim', text: 'Claims in order, the experiments that test them, ablations as children, and planned runs.', caption: 'The experiment map, authored as an argument rather than a history.' },
+    { image: 'experiment-review.png', title: 'Review a result fast', text: 'Question, decision rule written before the run, and whether the rule was met.', caption: 'An experiment’s Review tab: “Rule met: yes” with the deciding numbers.' },
+    { image: 'experiment-figures.png', title: 'Figures with reading guides', text: 'Figures and tables straight from your run folders, each with a guide on how to read it.', caption: 'Results: learning curves with a reading guide.' },
+    { image: 'related-work.png', title: 'Related work with PDF and code', text: 'From a paper name or arXiv link: metadata, BibTeX, the PDF, and the authors’ code.', caption: 'Related work: a paper with its arXiv record and code repository.' },
+    { image: 'back-burner.png', title: 'Prune without losing anything', text: 'Refuted or superseded work leaves the map with a reason and stays restorable.', caption: 'Back burner: a refuted claim superseded by a sharper one.' },
+  ];
+  const tabs = document.querySelector('.tabs'), image = document.getElementById('tour-image'), caption = document.getElementById('tour-caption');
+  const show = index => {
+    tabs.querySelectorAll('.tab').forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
+    image.src = `screenshots/${steps[index].image}`; document.getElementById('tour-link').href = image.src; image.alt = steps[index].caption; caption.textContent = steps[index].caption;
+  };
+  steps.forEach((step, index) => {
+    const tab = document.createElement('button');
+    tab.className = 'tab'; tab.type = 'button'; tab.setAttribute('role', 'tab');
+    tab.innerHTML = `<strong>${step.title}</strong><span>${step.text}</span>`;
+    tab.addEventListener('click', () => show(index));
+    tab.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'].includes(event.key)) return;
+      event.preventDefault();
+      const next = (index + (event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : steps.length - 1)) % steps.length;
+      show(next); tabs.children[next].focus();
+    });
+    tabs.appendChild(tab);
+  });
+  const video = document.querySelector('video');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { video.removeAttribute('autoplay'); video.pause(); }
+  steps.forEach(step => { const preload = new Image(); preload.src = `screenshots/${step.image}`; });
+  show(0);
+  const themes = ['auto', 'light', 'dark'], button = document.getElementById('theme');
+  let theme = 'auto';
+  try { theme = localStorage.getItem('rm-theme') || 'auto'; } catch {}
+  const apply = () => { if (theme === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', theme); button.textContent = `Theme: ${theme}`; };
+  button.addEventListener('click', () => { theme = themes[(themes.indexOf(theme) + 1) % themes.length]; try { localStorage.setItem('rm-theme', theme); } catch {} apply(); });
+  apply();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Shared implementation
+
+This directory sits below the software root. `types.ts` defines records and UI messages; `workflow.ts` defines validated, reversible Back burner placement shared with the webview; `store.ts` owns Markdown, history, revision checks, and SQLite indexing. `service.ts` routes UI operations. `extension.ts` hosts VS Code, OAuth, and source navigation; `cli.ts` exposes JSON commands and stdio MCP. `pilot.ts` imports selected historical research material without modifying its sources. `runs.ts` prepares and submits immutable experiments; `run-worker.ts` records independent execution attempts. `preview.ts` hosts the browser development view. `integrations/` contains external service and code-map adapters.
+
+`service.snapshot({cached:true})` composes state without filesystem, Git, source-parser, or credential I/O. `snapshot()` remains a full refresh for explicit callers. `loadSection()` fills scoped report/source caches; `refresh()` updates memory, runs, and the active resource. Extension navigation bypasses the mutation queue, background tasks coalesce, and published navigation revisions prevent late responses from changing the selected page.
+
+`previews.ts` reads bounded previews from a selected record and its directly linked experiment evidence. It handles local Markdown images, tabular files, declared artifact folders, and figure inventories. `previewEntity` is a separate read-only bridge request; image data travels with its response, so Remote SSH does not require browser access to cluster paths or broader webview resource roots.

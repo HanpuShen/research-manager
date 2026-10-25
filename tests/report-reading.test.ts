@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { readReport, reportOutline } from '../src/integrations/report.js';
+
+test('report outline lists headings across files; sections read to the next heading of the same level; files stay inside the clone', async t => {
+  const repo = await mkdtemp(path.join(os.tmpdir(), 'research-report-read-'));
+  t.after(() => rm(repo, { recursive: true, force: true }));
+  await mkdir(path.join(repo, 'sections'));
+  await writeFile(path.join(repo, 'main.tex'), '\\documentclass{article}\n\\begin{document}\n\\section{Introduction}\nIntro text.\n\\subsection{Motivation}\nWhy.\n\\section*{Method} % starred\nMethod text.\n\\input{sections/results}\n\\end{document}\n');
+  await writeFile(path.join(repo, 'sections', 'results.tex'), '\\section[short]{Results and Limits}\nNumbers.\n');
+  await writeFile(path.join(repo, 'refs.bib'), '@misc{a, title={A}}\n');
+  const outline = await reportOutline(repo);
+  assert.deepEqual(outline.files, ['main.tex', 'refs.bib', 'sections/results.tex']);
+  assert.deepEqual(outline.headings.map(h => [h.file, h.line, h.level, h.title]), [['main.tex', 3, 'section', 'Introduction'], ['main.tex', 5, 'subsection', 'Motivation'], ['main.tex', 7, 'section', 'Method'], ['sections/results.tex', 1, 'section', 'Results and Limits']]);
+  const intro = await readReport(repo, 'main.tex', { section: 'introduction' });
+  assert.deepEqual([intro.firstLine, intro.lastLine, intro.truncated], [3, 6, false]);
+  assert.match(intro.text, /Motivation\}\nWhy\./);
+  assert.equal((await readReport(repo, 'sections/results.tex', { section: 'Results' })).text, '\\section[short]{Results and Limits}\nNumbers.\n');
+  const window = await readReport(repo, 'main.tex', { offset: 2, limit: 2 });
+  assert.deepEqual([window.firstLine, window.lastLine, window.truncated], [3, 4, true]);
+  await assert.rejects(readReport(repo, 'main.tex', { section: 'Nope' }), /No section "Nope"/);
+  await assert.rejects(readReport(repo, '../etc/passwd'), /No file|Only \.tex/);
+  await writeFile(path.join(repo, 'main.tex'), (await readReport(repo, 'main.tex', { limit: 1000 })).text + '\n\\section{Introduction}\nAgain.\n');
+  const first = await readReport(repo, 'main.tex', { section: 'Introduction' });
+  assert.match(first.ambiguous!, /Several sections match \(lines 3, \d+\); this is the one at line 3/);
+  const second = Number(/lines 3, (\d+)/.exec(first.ambiguous!)![1]);
+  assert.equal((await readReport(repo, 'main.tex', { section: 'Introduction', line: second })).text, '\\section{Introduction}\nAgain.\n');
+});

@@ -1,0 +1,17 @@
+src/**
+webview/**
+tests/**
+scripts/**
+node_modules/**
+.tools/**
+.git/**
+test-results/**
+*.vsix
+tsconfig.json
+package-lock.json
+.tools
+node_modules
+site/**
+media/screenshots/**
+examples/demo-memory/**
+.github/**
